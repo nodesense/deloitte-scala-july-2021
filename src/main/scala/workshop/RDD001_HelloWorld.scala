@@ -8,7 +8,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 // This is Spark Driver/Application
 object RDD001_HelloWorld extends  App {
    val conf = new SparkConf().setAppName("HelloWorld")
-     .setMaster("local") // run spark inside this program embedded
+     .setMaster("spark://172.20.10.3:7077") // run spark inside this program embedded
 
   // Spark Context, brain of spark execution
   val sc = new SparkContext(conf)

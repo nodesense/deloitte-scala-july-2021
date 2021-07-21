@@ -4,8 +4,16 @@ import org.apache.spark.{SparkConf, SparkContext}
 object RDD004_Partitions extends  App {
   // local - default parallization will be 1
   // local[2] - default parallization will be 2
-  val conf = new SparkConf().setAppName("HelloWorld")
-    .setMaster("local") //  local - default parallization will be 1
+  // driver is local to this jvm
+  val conf = new SparkConf()
+    .setAppName("HelloWorld")
+    .set("spark.executor.memory", "4g")
+    .set("spark.driver.memory", "4g")
+    .set("spark.cores.max", "4")
+    .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+    .set("spark.jars", """C:\Users\Gopalakrishnan\deloitte-scala-july-2021\target\scala-2.11\deloitte-spark-workshop_2.11-0.1.jar""")
+    .setMaster("spark://192.168.1.110:7077") // now the executors shall be run inside worker
+    //.setMaster("local") //  local - default parallization will be 1, driver, executors run inside this jvm process
     //.setMaster("local[2]") // local[2] - default parallization will be 2
    // .setMaster("local[*]") // local[*] - based on number of core
 
@@ -14,10 +22,11 @@ object RDD004_Partitions extends  App {
 
   sc.setLogLevel("WARN") // Disable INFO, DEBUG logs, show WARN, ERROR
 
-  val data = 1 to 100000000
+  val data = 1 to 100
 
-  val rdd1 = sc.parallelize(data) // takes default paralleism from local[??]
+  val rdd1 = sc.parallelize(data, 1) // takes default paralleism from local[??]
   //val rdd1 = sc.parallelize(data, 100) // explicit partitions
+
 
   println("RDD1 partitions", rdd1.getNumPartitions)
 
@@ -38,13 +47,13 @@ object RDD004_Partitions extends  App {
   println("RDD3 partititions", rdd3.getNumPartitions)
 
   println("Rdd1 partition data")
-  rdd1.glom().collect().foreach(arr => println(arr.toList))
+//  rdd1.glom().collect().foreach(arr => println(arr.toList))
 
   // collect data from partitions as they stored
-  val partitionData = rdd3.glom() // return an RDD with partition data
-  val partData = partitionData.collect() // Array[Array[Int]]
+ // val partitionData = rdd3.glom() // return an RDD with partition data
+//  val partData = partitionData.collect() // Array[Array[Int]]
   println("rdd 3 result partition data")
-  partData.foreach(arr => println(arr.toList))
+//  partData.foreach(arr => println(arr.toList))
 
   // action
   println("-------MIN---------")
