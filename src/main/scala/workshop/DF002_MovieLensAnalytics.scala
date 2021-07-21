@@ -158,5 +158,4 @@ object DF002_MovieLensAnalytics extends  App {
 
   mostPopularMovies.show(200)
 
-  //TODO: SQL + DF Sorting
 }
