@@ -44,7 +44,7 @@ object DF002_MovieLensAnalytics extends  App {
 
 
   // we no need to use inferSchema
-  val movieDf = spark.read
+  val movieDf2 = spark.read
     .format("csv")
     .option("header",  true)
     .option("delimitter", ",")
@@ -60,8 +60,17 @@ object DF002_MovieLensAnalytics extends  App {
     .schema(RatingSchema) // use the Schema
     .load(RatingsPath)
 
+  // movieDf2 is cached across all the executors
+  // avoid shuffle
+  // data will be in local memory for joins
+  // don't use this for fact table
+  // use for dimension/master tables
+  val movieDf = broadcast(movieDf2)
+
   movieDf.printSchema()
   ratingDf.printSchema()
+
+  ratingDf.cache() // calls rdd.cache, memory and disk
 
   movieDf.show(2)
   ratingDf.show(2)
@@ -157,6 +166,17 @@ object DF002_MovieLensAnalytics extends  App {
                                         .select(popularMovies("movieId"), $"title", $"avg_rating", $"total_rating")
 
   mostPopularMovies.show(200)
+
+  // don't use explain in production deployment
+  // use it during development, understand the spark execution
+  // explain also uses action
+  println("EXPLAIN ")
+  popularMovies.explain() // shall give the plan of execution
+
+  println("EXPLAIN EXTENDED")
+  popularMovies.explain(true) // shall give the plan of execution
+
+
 
   // on the same machine, open browser, http://localhost:4040
   println("Press enter to exit")
