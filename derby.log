@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Thu Jul 22 12:02:43 IST 2021:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-017a-ccea-9319-0000a0859540 
+on database directory /home/krish/deloitte-spark-workshop/metastore_db with class loader org.apache.spark.sql.hive.client.IsolatedClientLoader$$anon$1@67b61834 
+Loaded from file:/home/krish/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/derby/derby/10.12.1.1/derby-10.12.1.1.jar
+java.vendor=Private Build
+java.runtime.version=1.8.0_292-8u292-b10-0ubuntu1~20.04-b10
+user.dir=/home/krish/deloitte-spark-workshop
+os.name=Linux
+os.arch=amd64
+os.version=5.8.0-63-generic
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

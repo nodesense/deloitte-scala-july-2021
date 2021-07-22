@@ -16,6 +16,10 @@ object DF002_MovieLensAnalytics extends  App {
   // spark session
   val spark = SparkSession.builder().master("local[*]")
     .appName("MovieLensBasics")
+    .config("hive.metastore.uris", "thrift://65.21.50.85:9083" ) // hive meta data server centralized
+    .config("spark.sql.warehouse.dir", "hdfs://65.21.50.85:8020/user/hive/warehouse" )
+    // data is from hadoop
+    .config("hive.metastore.warehouse.dir", "hdfs://65.21.50.85:8020/user/hive/warehouse" )
     .getOrCreate()
 
   // if we need spark context
@@ -156,6 +160,7 @@ object DF002_MovieLensAnalytics extends  App {
     .filter( ($"total_rating" >= 100) && ($"avg_rating" >= 3))
     .sort(desc("avg_rating"))
 
+
   popularMovies.show(200)
 
   // movieId, total_rating, avg_rating
@@ -167,15 +172,45 @@ object DF002_MovieLensAnalytics extends  App {
 
   mostPopularMovies.show(200)
 
+
+  // hive meta store
+  spark.sql("CREATE DATABASE IF NOT EXISTS gk_moviedb").show()
+
+  // create a table if not exist in hive meta store
+  // write the content to hdfs??
+  mostPopularMovies.write
+                   .mode("overwrite")
+    .saveAsTable("gk_moviedb.most_popular_movies")
+
+
   // don't use explain in production deployment
   // use it during development, understand the spark execution
   // explain also uses action
+
+  // What is plan? only for DF, SQL, NOT FOR RDD
+  // Spark shall optimize the queires, executions to get best performance
+  // == Parsed Logical Plan ==
+  //   your code as is written either in sql, df way
+  //   it won't resolve if any column exists or not, column data type
+
+  // == Analyzed Logical Plan ==
+    // spark will check if the table exist, column exist, columns are good to go
+  // code as is, no optimization
+
+  // == Optimized Logical Plan ==
+    // cost and optimization performed,
+    // filter and then sort
+
+  // == Physical Plan ==
   println("EXPLAIN ")
   popularMovies.explain() // shall give the plan of execution
 
   println("EXPLAIN EXTENDED")
   popularMovies.explain(true) // shall give the plan of execution
 
+
+  println("EXPLAIN EXTENDED JOIN.")
+  mostPopularMovies.explain(true)
 
 
   // on the same machine, open browser, http://localhost:4040
