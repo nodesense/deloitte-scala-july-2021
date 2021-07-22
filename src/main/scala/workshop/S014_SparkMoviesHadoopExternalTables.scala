@@ -49,4 +49,7 @@ object S014_SparkMoviesHadoopExternalTables extends  App {
   spark.sql("SELECT * FROM moviedb.ratings").show(5)
 
 
+  println("Specific movie")
+  spark.sql("SELECT * FROM moviedb.movies where movieId=120000").show(5)
+
 }

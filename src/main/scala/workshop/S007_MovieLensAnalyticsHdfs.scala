@@ -8,8 +8,8 @@ object S007_MovieLensAnalyticsHdfs extends  App {
   //val MoviesPath = "/home/krish/ml-latest-small/movies.csv"
   // val RatingsPath = "/home/krish/ml-latest-small/ratings.csv"
 
-  val MoviesPath = "hdfs://bigdata.training.sh:8020/user/movieset/movies.csv"
-  val RatingsPath = "hdfs://bigdata.training.sh:8020/user/movieset/ratings.csv"
+  val MoviesPath = "hdfs://bigdata.training.sh:8020/user/movieset/movies"
+  val RatingsPath = "hdfs://bigdata.training.sh:8020/user/movieset/ratings"
 
 
 
@@ -20,6 +20,7 @@ object S007_MovieLensAnalyticsHdfs extends  App {
     .appName("MovieLensAnalytics")
     .getOrCreate()
 
+  spark.sparkContext.setLogLevel("WARN")
   import spark.implicits._
   // movie schema
   val MovieSchema = StructType(

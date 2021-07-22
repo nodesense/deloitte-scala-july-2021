@@ -178,9 +178,9 @@ object DF002_MovieLensAnalytics extends  App {
 
   // create a table if not exist in hive meta store
   // write the content to hdfs??
-  mostPopularMovies.write
-                   .mode("overwrite")
-    .saveAsTable("gk_moviedb.most_popular_movies")
+//  mostPopularMovies.write
+//                   .mode("overwrite")
+//    .saveAsTable("gk_moviedb.most_popular_movies")
 
 
   // don't use explain in production deployment
@@ -211,6 +211,17 @@ object DF002_MovieLensAnalytics extends  App {
 
   println("EXPLAIN EXTENDED JOIN.")
   mostPopularMovies.explain(true)
+
+
+
+  // Write the data frame as parquet format,  90% less size
+
+  movieDf.write.mode("overwrite").parquet("hdfs://bigdata.training.sh:8020/user/krish/moviedb/movies-parquet")
+  ratingDf.coalesce(1).write.mode("overwrite").parquet("hdfs://bigdata.training.sh:8020/user/krish/moviedb/ratings-parquet")
+  // by default, groupBy, join create 200 partititions, all partitions data shall be written to hdfs as smaller files
+  // reduce the number of files , reduce number of partitions
+  // NEVER USE IT for INCREMENTING PARTITIONS
+  mostPopularMovies.coalesce(1).write.mode("overwrite").parquet("hdfs://bigdata.training.sh:8020/user/krish/moviedb/most-popular-movies-parquet")
 
 
   // on the same machine, open browser, http://localhost:4040
