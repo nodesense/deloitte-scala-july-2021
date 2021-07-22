@@ -3,7 +3,7 @@ package workshop
 import org.apache.spark.{SparkConf, SparkContext}
 object RDD002_HelloWorldEx extends  App {
   val conf = new SparkConf().setAppName("HelloWorld")
-    .setMaster("local") // run spark inside this program embedded
+    .setMaster("local[2]") // run spark inside this program embedded
 
   // Spark Context, brain of spark execution
   val sc = new SparkContext(conf)
@@ -27,6 +27,17 @@ object RDD002_HelloWorldEx extends  App {
     println("Map * 10 ", n , n * 10)
     n * 10 // return value
   })
+
+
+
+  // rdd3 is reused multiple times
+  // now cache the rdd3 so that the operations from rdd1 to rdd3 shall be repeated again and again
+
+  // cache
+  // persist [ different level of caching, DISK, MEMORY, DISK_MEMORY]
+  // cache will be stored in executor
+  // Storage memory is used for cache
+  rdd3.cache() // this calls persist with MEMORY_AND_DISK , cache data in memory, if memory not having space, push to disk
 
   // action 1, every action basically create a job on the given rdd lineage
   rdd3.collect().foreach(println)

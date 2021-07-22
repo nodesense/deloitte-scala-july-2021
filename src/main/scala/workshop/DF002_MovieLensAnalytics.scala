@@ -158,4 +158,7 @@ object DF002_MovieLensAnalytics extends  App {
 
   mostPopularMovies.show(200)
 
+  // on the same machine, open browser, http://localhost:4040
+  println("Press enter to exit")
+  scala.io.StdIn.readLine()
 }
